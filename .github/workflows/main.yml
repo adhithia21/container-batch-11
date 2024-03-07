@@ -4,7 +4,7 @@ on:
     - master
 
 jobs:
-  build-and-push:
+  build-and-push: # CI Process
     runs-on: ubuntu-latest
     steps:
       - run: ls
@@ -23,3 +23,16 @@ jobs:
           tags: aditirvan/container-batch-11:${{ github.run_number }}
       - name: check image
         run: docker images
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: 22
+          script: |
+            whoami

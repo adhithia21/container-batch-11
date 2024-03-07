@@ -24,7 +24,7 @@ jobs:
       - name: check image
         run: docker images
 
-  deploy:
+  deploy: # CD Process
     runs-on: ubuntu-latest
     needs: build-and-push
     steps:

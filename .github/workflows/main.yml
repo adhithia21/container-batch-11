@@ -11,40 +11,40 @@ jobs:
           echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
           echo "Tag name from github.ref_name: ${{  github.ref_name }}"
 
-  # build-and-push: # CI Process
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - run: ls
-  #     - name: clone repository
-  #       uses: actions/checkout@v3
-  #     - run: ls
-  #     - name: login to docker hub
-  #       uses: docker/login-action@v3
-  #       with:
-  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
-  #     - name: build docker image and push
-  #       uses: docker/build-push-action@v5
-  #       with:
-  #         push: true
-  #         tags: aditirvan/container-batch-11:${{ github.run_number }}
-  #     - name: check image
-  #       run: docker images
+  build-and-push: # CI Process
+    runs-on: ubuntu-latest
+    steps:
+      - run: ls
+      - name: clone repository
+        uses: actions/checkout@v3
+      - run: ls
+      - name: login to docker hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: build docker image and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: aditirvan/container-batch-11:${{  github.ref_name }}"
+      - name: check image
+        run: docker images
 
-  # deploy: # CD Process
-  #   runs-on: ubuntu-latest
-  #   needs: build-and-push
-  #   steps:
-  #     - name: deploy to server
-  #       uses: appleboy/ssh-action@v1.0.3
-  #       with:
-  #         host: ${{ secrets.HOST }}
-  #         username: ${{ secrets.USERNAME }}
-  #         key: ${{ secrets.KEY }}
-  #         port: 22
-  #         script: |
-  #           docker login --username  ${{ secrets.DOCKERHUB_USERNAME }} --password ${{ secrets.DOCKERHUB_TOKEN }}
-  #           docker pull aditirvan/container-batch-11:${{ github.run_number }}
-  #           docker stop web-server
-  #           docker rm web-server
-  #           docker run --name web-server -d -p 80:8000 aditirvan/container-batch-11:${{ github.run_number }}
+  deploy: # CD Process
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: 22
+          script: |
+            docker login --username  ${{ secrets.DOCKERHUB_USERNAME }} --password ${{ secrets.DOCKERHUB_TOKEN }}
+            docker pull aditirvan/container-batch-11:${{  github.ref_name }}"
+            docker stop web-server
+            docker rm web-server
+            docker run --name web-server -d -p 80:8000 aditirvan/container-batch-11:${{  github.ref_name }}"

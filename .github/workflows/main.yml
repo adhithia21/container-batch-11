@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: aditirvan/container-batch-11:${{  github.ref_name }}"
+          tags: aditirvan/container-batch-11:${{  github.ref_name }}
       - name: check image
         run: docker images
 
@@ -44,7 +44,7 @@ jobs:
           port: 22
           script: |
             docker login --username  ${{ secrets.DOCKERHUB_USERNAME }} --password ${{ secrets.DOCKERHUB_TOKEN }}
-            docker pull aditirvan/container-batch-11:${{  github.ref_name }}"
+            docker pull aditirvan/container-batch-11:${{  github.ref_name }}
             docker stop web-server
             docker rm web-server
-            docker run --name web-server -d -p 80:8000 aditirvan/container-batch-11:${{  github.ref_name }}"
+            docker run --name web-server -d -p 80:8000 aditirvan/container-batch-11:${{  github.ref_name }}
